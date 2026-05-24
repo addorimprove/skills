@@ -1,19 +1,20 @@
-# prompt
+# skills
 
-An [agent skill](https://skills.sh) for reading and writing prompts (documents),
-versions, and comments in the **addorimprove** app, driven by the published
-`prompt` CLI (`npx @addorimprove/prompt`).
+Agent skills for the **addorimprove** app, installable via the
+[skills](https://skills.sh) CLI. Currently contains the **`prompt`** skill —
+reading and writing prompts (documents), versions, and comments, driven by the
+published `prompt` CLI (`npx @addorimprove/prompt`).
 
 ## Install
 
 ```bash
-npx skills add addorimprove/prompt
+npx skills add addorimprove/skills
 ```
 
 Target a specific agent (e.g. Claude Code):
 
 ```bash
-npx skills add addorimprove/prompt -a claude-code
+npx skills add addorimprove/skills -a claude-code
 ```
 
 ## What it does
