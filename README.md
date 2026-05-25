@@ -19,9 +19,9 @@ npx skills add addorimprove/skills -a claude-code
 
 ## What it does
 
-Lets your agent fetch, search, read, create, and iterate prompts/documents and
-their comments in the addorimprove app (`app.photosharingapp.com`) through the
-`prompt` CLI. The full instructions live in
+Lets your agent fetch, search, read, create, iterate, and publish/unpublish
+prompts/documents and their comments in the addorimprove app
+(`app.photosharingapp.com`) through the `prompt` CLI. The full instructions live in
 [`skills/prompt/SKILL.md`](skills/prompt/SKILL.md).
 
 ## Auth

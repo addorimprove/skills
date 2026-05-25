@@ -52,6 +52,7 @@ user globally installed it).
 | Create a doc | `npx @addorimprove/prompt new --name "<name>" -f <file> [--format mdx\|html] -y --json` → `{ id, label:"1-1" }` |
 | Add on same line | `npx @addorimprove/prompt iterate <id> [--parent <label>] -f <file> [--format] -y --json` → `{ label }` |
 | Fork a new line | `npx @addorimprove/prompt branch <id> <parentLabel> -f <file> [--format] -y --json` → `{ label }` |
+| Change visibility | `npx @addorimprove/prompt visibility <id> <label> public\|private -y --json` → `{ label, isPublic }` |
 
 - `iterate` defaults `--parent` to the doc's latest label if omitted.
 - `--format` is `mdx` (default) or `html`.
@@ -87,5 +88,6 @@ Commands print a message and set a non-zero exit code:
 
 ## Guardrail
 
-Confirm with the user before any write (`new` / `iterate` / `branch`) — describe what
-you'll create, then run with `-y`. Comments are read-only through this CLI.
+Confirm with the user before any write (`new` / `iterate` / `branch` / `visibility`) —
+describe what you'll create or change, then run with `-y`. Comments are read-only
+through this CLI.
