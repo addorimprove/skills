@@ -52,11 +52,12 @@ user globally installed it).
 | Create a doc | `npx @addorimprove/prompt new --name "<name>" -f <file> [--format mdx\|html] -y --json` → `{ id, label:"1-1" }` |
 | Add on same line | `npx @addorimprove/prompt iterate <id> [--parent <label>] -f <file> [--format] -y --json` → `{ label }` |
 | Fork a new line | `npx @addorimprove/prompt branch <id> <parentLabel> -f <file> [--format] -y --json` → `{ label }` |
-| Change visibility | `npx @addorimprove/prompt visibility <id> <label> public\|private -y --json` → `{ label, isPublic }` |
+| Change visibility | `npx @addorimprove/prompt visibility <id> <label> public\|private -y --json` → `{ label, isPublic, publicSlug, publicUrl }` |
 
 - `iterate` defaults `--parent` to the doc's latest label if omitted.
 - `--format` is `mdx` (default) or `html`.
 - Build a shareable link from the `whoami` id: `$MD_PROMPT_BASE_URL/<id>/<docId>/<label>`.
+- When a version is made public, the API also returns a short link of the form `/public/{slug}` (5 base62 characters). The CLI prints this as a `Short link:` line after the success line. Slugs are minted once on first publish and persist forever — even if the version is later made private and re-published, the same slug works again.
 
 ## Workflow recipes
 
