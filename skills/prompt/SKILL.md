@@ -1,6 +1,6 @@
 ---
 name: prompt
-description: Use when the user wants to fetch, search, read, create, or iterate prompts/documents, their versions, or comments in the markdown-notes app (addorimprove / app.photosharingapp.com). Driven by the published `prompt` CLI (npx @addorimprove/prompt).
+description: Use when the user wants to fetch, search, read, create, or iterate prompts/documents, their versions, or comments in the markdown-notes app (addorimprove.com). Driven by the published `prompt` CLI (npx @addorimprove/prompt).
 ---
 
 # Prompt
@@ -17,7 +17,7 @@ user globally installed it).
   it's an interactive browser (PKCE) login you can't perform yourself. It saves
   the key to `~/.config/prompt/config.json`. `MD_PROMPT_API_KEY` env overrides
   the file if set.
-- **Target.** Defaults to prod (`https://app.photosharingapp.com`). Override with
+- **Target.** Defaults to prod (`https://addorimprove.com`). Override with
   `--base-url <url>` or `MD_PROMPT_BASE_URL` (e.g. `http://localhost:3000`).
 - **Where to run.** From the project root (or any dir) — but **not** from a
   checkout's own `cli/` folder (npx then fails with `prompt: command not found`).
