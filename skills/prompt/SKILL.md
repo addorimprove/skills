@@ -49,13 +49,13 @@ user globally installed it).
 | Doc tree only | `npx @addorimprove/prompt view <id> --tree` |
 | One version's content | `npx @addorimprove/prompt view <id> <label> --json` → `{ label, content, format, … }` |
 | A version's comments | `npx @addorimprove/prompt comments <id> <label> --json` (pre-sorted) |
-| Create a doc | `npx @addorimprove/prompt new --name "<name>" -f <file> [--format mdx\|html] -y --json` → `{ id, label:"1-1" }` |
+| Create a doc | `npx @addorimprove/prompt new --name "<name>" -f <file> [--format mdx\|html\|plain] -y --json` → `{ id, label:"1-1" }` |
 | Add on same line | `npx @addorimprove/prompt iterate <id> [--parent <label>] -f <file> [--format] -y --json` → `{ label }` |
 | Fork a new line | `npx @addorimprove/prompt branch <id> <parentLabel> -f <file> [--format] -y --json` → `{ label }` |
 | Change visibility | `npx @addorimprove/prompt visibility <id> <label> public\|private -y --json` → `{ label, isPublic, publicSlug, publicUrl }` |
 
 - `iterate` defaults `--parent` to the doc's latest label if omitted.
-- `--format` is `mdx` (default) or `html`.
+- `--format` is `mdx` (default), `html`, or `plain`. `plain` renders source verbatim in a `<pre>` (HTML-escaped, monospace, whitespace preserved) — use it for code snippets, logs, or anything where markdown/HTML interpretation would be wrong. Plain is opt-in only; auto-detection only ever picks `mdx` or `html`.
 - Build a shareable link from the `whoami` id: `$MD_PROMPT_BASE_URL/<id>/<docId>/<label>`.
 - When a version is made public, the API also returns a short link of the form `/public/{slug}` (5 base62 characters). The CLI prints this as a `Short link:` line after the success line. Slugs are minted once on first publish and persist forever — even if the version is later made private and re-published, the same slug works again.
 
