@@ -1,6 +1,6 @@
 ---
 name: prompt
-description: Use when the user wants to fetch, search, read, create, or iterate prompts/documents, their versions, or comments in the markdown-notes app (addorimprove.com). Driven by the published `prompt` CLI (npx @addorimprove/prompt).
+description: Use when the user wants to fetch, search, read, create, or iterate prompts/documents and their versions, or to read/add/reply/resolve comments in the markdown-notes app (addorimprove.com). Driven by the published `prompt` CLI (npx @addorimprove/prompt).
 ---
 
 # Prompt
@@ -29,8 +29,10 @@ user globally installed it).
 
 - **Always pass `-f <file>`** to `new` / `iterate` / `branch`. Without it the CLI
   opens `$EDITOR` and hangs. Write the body to a temp file first, then pass it.
-- **Always pass `-y`** to writes. Without it the CLI waits on a stdin `[y/N]`
-  prompt you can't answer. (Get the user's go-ahead in chat first — see Guardrail.)
+- **Always pass `-y`** to `new` / `iterate` / `branch` / `visibility` writes. Without
+  it the CLI waits on a stdin `[y/N]` prompt you can't answer. (Get the user's
+  go-ahead in chat first — see Guardrail.) The `comment add` / `reply` / `resolve`
+  writes never prompt, so they don't need `-y`.
 
 ## Version label model
 
@@ -48,7 +50,10 @@ user globally installed it).
 | Doc tree + latest content | `npx @addorimprove/prompt view <id> --json` → `{ id, name, versions:[{label,commentCount}], latest:{label,content} }` |
 | Doc tree only | `npx @addorimprove/prompt view <id> --tree` |
 | One version's content | `npx @addorimprove/prompt view <id> <label> --json` → `{ label, content, format, … }` |
-| A version's comments | `npx @addorimprove/prompt comments <id> <label> --json` (pre-sorted) |
+| A version's comments | `npx @addorimprove/prompt comment list <id> <label> --json` (pre-sorted; `comments <id> <label>` is an alias) |
+| Add a comment | `npx @addorimprove/prompt comment add <id> <label> --body "<text>" [--quote "<text>"] --json` → `{ id }` |
+| Reply to a comment | `npx @addorimprove/prompt comment reply <id> <label> <commentId> --body "<text>" --json` → `{ id }` |
+| Resolve / un-resolve | `npx @addorimprove/prompt comment resolve <id> <label> <commentId> [--unresolve] --json` → `{ id, resolved }` |
 | Create a doc | `npx @addorimprove/prompt new --name "<name>" -f <file> [--format mdx\|html\|plain] -y --json` → `{ id, label:"1-1" }` |
 | Add on same line | `npx @addorimprove/prompt iterate <id> [--parent <label>] -f <file> [--format] -y --json` → `{ label }` |
 | Fork a new line | `npx @addorimprove/prompt branch <id> <parentLabel> -f <file> [--format] -y --json` → `{ label }` |
@@ -58,6 +63,25 @@ user globally installed it).
 - `--format` is `mdx` (default), `html`, or `plain`. `plain` renders source verbatim in a `<pre>` (HTML-escaped, monospace, whitespace preserved) — use it for code snippets, logs, or anything where markdown/HTML interpretation would be wrong. Plain is opt-in only; auto-detection only ever picks `mdx` or `html`.
 - Build a shareable link from the `whoami` id: `$MD_PROMPT_BASE_URL/<id>/<docId>/<label>`.
 - When a version is made public, the API also returns a short link of the form `/public/{slug}` (5 base62 characters). The CLI prints this as a `Short link:` line after the success line. Slugs are minted once on first publish and persist forever — even if the version is later made private and re-published, the same slug works again.
+
+### Commenting (CLI ≥ 0.6.0)
+
+You can **add review comments as an AI agent**. Comments you post are the owner's
+own comments, shown in the web UI with an **AI** badge so the owner can tell them
+apart; resolving a thread is attributed too (`resolved by AI` vs `resolved by you`).
+
+- **`comment add`** posts a top-level comment. Omit `--quote` for a whole-document
+  comment. Pass `--quote "<text>"` to anchor it to a span — the quote must match the
+  **raw version source verbatim**, including any markdown/HTML syntax (it is *not*
+  matched against rendered text); the first occurrence wins. A quote not found in the
+  source is a 400. Anchored comments are **not** supported on `html` versions
+  (whole-document only) — anchoring an html version is a 400.
+- **`comment reply`** posts into an existing thread; you can only reply to a
+  top-level comment, not to another reply.
+- **`comment resolve`** sets resolved state explicitly (idempotent); `--unresolve`
+  re-opens. Only top-level comments can be resolved.
+- These comment writes **do not prompt** for confirmation and don't need `-f`/`-y` —
+  pass everything as flags (see the Guardrail note about getting the user's go-ahead).
 
 ## Workflow recipes
 
@@ -72,6 +96,13 @@ improved body to a file addressing the unresolved comments →
 
 **New prompt:** write the body to a file →
 `npx @addorimprove/prompt new --name "<name>" -f draft.md -y --json`.
+
+**Review a version (add comments):** `npx @addorimprove/prompt view <id> <label> --json`
+to read the raw `content` → for each issue, `comment add <id> <label> --body "<note>"
+--quote "<exact raw substring>"` (omit `--quote` for an overall note) → optionally
+`comment reply` into a thread, or `comment resolve <id> <label> <commentId>` once
+addressed. Use `comment list <id> <label> --json` to see existing threads
+(`authorKind`, `resolved`, `resolvedBy`, `snippet`, `replies`) before commenting.
 
 ## Errors
 
@@ -90,5 +121,6 @@ Commands print a message and set a non-zero exit code:
 ## Guardrail
 
 Confirm with the user before any write (`new` / `iterate` / `branch` / `visibility`) —
-describe what you'll create or change, then run with `-y`. Comments are read-only
-through this CLI.
+describe what you'll create or change, then run with `-y`. The `comment add` /
+`reply` / `resolve` writes don't take `-y` (they never prompt), but the same rule
+applies: get the user's go-ahead before posting or resolving comments on their behalf.
