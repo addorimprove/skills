@@ -1,6 +1,6 @@
 ---
 name: prompt
-description: Use when the user wants to fetch, search, read, create, or iterate prompts/documents and their versions, or to read/add/reply/resolve comments in the markdown-notes app (addorimprove.com). Driven by the published `prompt` CLI (npx @addorimprove/prompt).
+description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, or iterate prompts/documents and their versions, or read/add/reply/resolve comments in the markdown-notes app (addorimprove.com). Triggers on phrasings like "add prompt", "improve prompt", "fix prompt", "get prompt". Driven by the published `prompt` CLI (npx @addorimprove/prompt).
 ---
 
 # Prompt
