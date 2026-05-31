@@ -46,6 +46,7 @@ user globally installed it).
 | Goal | Command |
 |------|---------|
 | Who am I | `npx @addorimprove/prompt whoami --json` → `{ id, name, email }` |
+| Check for updates | `npx @addorimprove/prompt version --json` → `{ installed, latest, upToDate }` (`upToDate` is `null` when npm is unreachable) |
 | List / search docs | `npx @addorimprove/prompt ls [-q <query>] --json` → `[{ id, name, openCommentCount, … }]` |
 | What was I working on | `npx @addorimprove/prompt recent [--limit <n>] --json` → `[{ documentId, name, versionLabel, action, at, url }]` (most-recent-first, one row per doc; `action` ∈ visit/create/iterate/branch/publish/unpublish/comment) |
 | Doc tree + latest content | `npx @addorimprove/prompt view <id> --json` → `{ id, name, versions:[{label,commentCount}], latest:{label,content} }` |
@@ -65,6 +66,7 @@ user globally installed it).
 - Build a shareable link from the `whoami` id: `$MD_PROMPT_BASE_URL/<id>/<docId>/<label>`.
 - When a version is made public, the API also returns a short link of the form `/public/{slug}` (5 base62 characters). The CLI prints this as a `Short link:` line after the success line. Slugs are minted once on first publish and persist forever — even if the version is later made private and re-published, the same slug works again.
 - `recent` (CLI ≥ 0.7.0) surfaces the docs you most recently visited or wrote to (distinct per document, newest first) — use it to answer "what was I just working on?" before listing or searching. Each item's `url` is a ready-to-open absolute link.
+- `version` / `upgrade` (CLI ≥ 0.8.0): the CLI's npm version is the single source of truth for both the CLI and this skill. Check freshness with `npx @addorimprove/prompt version --json`; update the CLI with `npx @addorimprove/prompt upgrade` (or just always invoke `@latest`), and refresh this skill doc with `npx skills add addorimprove/skills`.
 
 ### Commenting (CLI ≥ 0.6.0)
 
