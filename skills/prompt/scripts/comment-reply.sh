@@ -11,6 +11,8 @@ while [ $# -gt 0 ]; do
 done
 id="${positional[0]:-}"; label="${positional[1]:-}"; cid="${positional[2]:-}"
 [ -n "$id" ] && [ -n "$label" ] && [ -n "$cid" ] && [ -n "$body_text" ] || { echo "comment-reply: need <id> <label> <commentId> --body <text>" >&2; exit 2; }
+require_int "comment-reply <id>" "$id"
+require_int "comment-reply <commentId>" "$cid"
 payload="$(jq -n --arg b "$body_text" '{body:$b}')"
 req POST "/docs/$id/versions/$(jq -rn --arg v "$label" '$v|@uri')/comments/$cid/replies" "$payload"
 echo

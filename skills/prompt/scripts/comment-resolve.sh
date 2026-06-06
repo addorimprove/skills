@@ -11,5 +11,7 @@ while [ $# -gt 0 ]; do
 done
 id="${positional[0]:-}"; label="${positional[1]:-}"; cid="${positional[2]:-}"
 [ -n "$id" ] && [ -n "$label" ] && [ -n "$cid" ] || { echo "comment-resolve: need <id> <label> <commentId> [--unresolve]" >&2; exit 2; }
+require_int "comment-resolve <id>" "$id"
+require_int "comment-resolve <commentId>" "$cid"
 req POST "/docs/$id/versions/$(jq -rn --arg v "$label" '$v|@uri')/comments/$cid/resolve" "{\"resolved\":$resolved}"
 echo

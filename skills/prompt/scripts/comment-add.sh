@@ -12,6 +12,7 @@ while [ $# -gt 0 ]; do
 done
 id="${positional[0]:-}"; label="${positional[1]:-}"
 [ -n "$id" ] && [ -n "$label" ] && [ -n "$body_text" ] || { echo "comment-add: need <id> <label> --body <text>" >&2; exit 2; }
+require_int "comment-add <id>" "$id"
 if [ -n "$quote" ]; then
   payload="$(jq -n --arg b "$body_text" --arg q "$quote" '{body:$b, quote:$q}')"
 else

@@ -9,6 +9,7 @@ while [ $# -gt 0 ]; do
     *) echo "recent: unexpected arg: $1" >&2; exit 2 ;;
   esac
 done
+[ -n "$limit" ] && require_int "recent --limit" "$limit"
 path="/activity"
 [ -n "$limit" ] && path="/activity?limit=$limit"
 req GET "$path" | jq '.activity'

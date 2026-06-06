@@ -12,6 +12,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 [ -n "$id" ] || { echo "iterate: missing <id>" >&2; exit 2; }
+require_int "iterate <id>" "$id"
 [ -n "$file" ] && [ -f "$file" ] || { echo "iterate: missing -f <file>" >&2; exit 2; }
 # Default parent to the doc's latest label.
 if [ -z "$parent" ]; then

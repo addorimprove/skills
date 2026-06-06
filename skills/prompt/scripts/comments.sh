@@ -9,4 +9,5 @@ while [ $# -gt 0 ]; do
   esac
 done
 [ -n "$id" ] && [ -n "$label" ] || { echo "comments: need <id> <label>" >&2; exit 2; }
+require_int "comments <id>" "$id"
 req GET "/docs/$id/versions/$(jq -rn --arg v "$label" '$v|@uri')/comments" | jq '.comments'

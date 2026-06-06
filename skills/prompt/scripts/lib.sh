@@ -84,3 +84,13 @@ req() {
       return 1 ;;
   esac
 }
+
+# require_int LABEL VALUE — exit 2 unless VALUE is a non-negative integer.
+# Use for document ids / comment ids / limits that get interpolated into URLs.
+require_int() {
+  case "$2" in
+    ''|*[!0-9]*)
+      echo "$1: must be a positive integer (got: ${2:-<empty>})" >&2
+      exit 2 ;;
+  esac
+}

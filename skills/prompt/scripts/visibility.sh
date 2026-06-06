@@ -10,6 +10,7 @@ while [ $# -gt 0 ]; do
 done
 id="${positional[0]:-}"; label="${positional[1]:-}"; vis="${positional[2]:-}"
 [ -n "$id" ] && [ -n "$label" ] && [ -n "$vis" ] || { echo "visibility: need <id> <label> public|private" >&2; exit 2; }
+require_int "visibility <id>" "$id"
 case "$vis" in
   public) ispublic="true" ;;
   private) ispublic="false" ;;

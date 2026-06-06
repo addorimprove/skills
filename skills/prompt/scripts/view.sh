@@ -9,6 +9,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 [ -n "$id" ] || { echo "view: missing <id>" >&2; exit 2; }
+require_int "view <id>" "$id"
 if [ -n "$label" ]; then
   req GET "/docs/$id/versions/$(jq -rn --arg v "$label" '$v|@uri')"
 else

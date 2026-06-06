@@ -13,6 +13,7 @@ while [ $# -gt 0 ]; do
 done
 id="${positional[0]:-}"; parent="${positional[1]:-}"
 [ -n "$id" ] && [ -n "$parent" ] || { echo "branch: need <id> <parentLabel>" >&2; exit 2; }
+require_int "branch <id>" "$id"
 [ -n "$file" ] && [ -f "$file" ] || { echo "branch: missing -f <file>" >&2; exit 2; }
 body="$(jq -n --arg parent "$parent" --rawfile content "$file" \
   '{intent:"branch", parentLabel:$parent, content:$content}')"
