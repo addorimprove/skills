@@ -51,4 +51,10 @@ err="$(XDG_CONFIG_HOME="$(mktemp -d)" req GET "" 2>&1)"; rc=$?
 assert_status 4 "$rc" "missing key exit code"
 assert_contains "$err" "Not logged in" "missing key message"
 
+# 7. Non-JSON error body -> no jq leakage, non-empty fallback message.
+err="$(MOCK_CURL_STATUS=502 MOCK_CURL_BODY='<html>502 Bad Gateway</html>' req GET "/docs/1" 2>&1)"; rc=$?
+assert_status 1 "$rc" "502 exit code"
+assert_contains "$err" "Request failed (502)" "502 message prefix"
+case "$err" in *"jq: "*|*"parse error"*) echo "FAIL 502 leaked jq error: $err" >&2; ASSERT_FAILS=$((ASSERT_FAILS+1));; *) echo "ok   502 no jq leak";; esac
+
 finish

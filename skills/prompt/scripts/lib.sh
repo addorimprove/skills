@@ -72,8 +72,15 @@ req() {
     2*) printf '%s' "$resp"; return 0 ;;
     401) echo "Not logged in. Run 'npx @addorimprove/prompt login'." >&2; return 4 ;;
     404) echo "Not found (or not yours)." >&2; return 1 ;;
-    409) echo "Label conflict — $(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
-    400) printf '%s\n' "$(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
-    *)  echo "Request failed ($status): $(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
+    *)
+      local msg
+      msg="$(printf '%s' "$resp" | jq -r '.error.message // empty' 2>/dev/null)"
+      [ -n "$msg" ] || msg="HTTP $status"
+      case "$status" in
+        409) echo "Label conflict — $msg" >&2 ;;
+        400) printf '%s\n' "$msg" >&2 ;;
+        *)   echo "Request failed ($status): $msg" >&2 ;;
+      esac
+      return 1 ;;
   esac
 }
