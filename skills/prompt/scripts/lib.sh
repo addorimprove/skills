@@ -36,3 +36,48 @@ resolve_base_url() { # [flag]
   fi
   printf '%s' "https://addorimprove.com"
 }
+
+# req METHOD PATH [JSON_BODY]
+# Sends an authenticated request to $BASE/api/v1/me$PATH. On 2xx prints the
+# response body (empty for 204) and returns 0. On error prints a CLI-matched
+# message to stderr and returns a non-zero status. Tests override curl via $CURL
+# and the base-url flag via $BASE_URL_FLAG.
+req() {
+  local method="$1" path="$2" body="${3:-}"
+  local key
+  key="$(resolve_api_key)"
+  if [ -z "$key" ]; then
+    echo "Not logged in. Run 'npx @addorimprove/prompt login'." >&2
+    return 4
+  fi
+  local base url
+  base="$(resolve_base_url "${BASE_URL_FLAG:-}")"
+  url="$base/api/v1/me$path"
+
+  local args=(-sS -X "$method" -H "x-api-key: $key" -w '\n%{http_code}')
+  if [ -n "$body" ]; then
+    args+=(-H 'content-type: application/json' -d "$body")
+  fi
+
+  # Propagate mock env vars to subprocesses when running under test harness.
+  [ -n "${MOCK_CURL_BODY+x}" ]   && export MOCK_CURL_BODY
+  [ -n "${MOCK_CURL_STATUS+x}" ] && export MOCK_CURL_STATUS
+
+  local out status resp
+  if ! out="$("${CURL:-curl}" "${args[@]}" "$url")"; then
+    echo "Request failed (network error)." >&2
+    return 1
+  fi
+  status="${out##*$'\n'}"
+  resp="${out%$'\n'*}"
+
+  case "$status" in
+    204) return 0 ;;
+    2*) printf '%s' "$resp"; return 0 ;;
+    401) echo "Not logged in. Run 'npx @addorimprove/prompt login'." >&2; return 4 ;;
+    404) echo "Not found (or not yours)." >&2; return 1 ;;
+    409) echo "Label conflict — $(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
+    400) printf '%s\n' "$(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
+    *)  echo "Request failed ($status): $(printf '%s' "$resp" | jq -r '.error.message // empty')" >&2; return 1 ;;
+  esac
+}
