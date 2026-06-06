@@ -4,6 +4,6 @@
 # real `curl -w '\n%{http_code}'` contract lib.sh relies on).
 set -uo pipefail
 if [ -n "${MOCK_CURL_ARGS_FILE:-}" ]; then
-  printf '%s \n' "$*" > "$MOCK_CURL_ARGS_FILE"
+  printf '%s\n' "$*" > "$MOCK_CURL_ARGS_FILE"
 fi
 printf '%s\n%s' "${MOCK_CURL_BODY:-}" "${MOCK_CURL_STATUS:-200}"

@@ -19,6 +19,14 @@ assert_contains() { # haystack needle [label]
   esac
 }
 
+assert_not_contains() { # haystack needle [label]
+  case "$1" in
+    *"$2"*) printf 'FAIL %s\n  %q unexpectedly contains %q\n' "${3:-assert_not_contains}" "$1" "$2" >&2
+            ASSERT_FAILS=$((ASSERT_FAILS + 1)) ;;
+    *) printf 'ok   %s\n' "${3:-assert_not_contains}" ;;
+  esac
+}
+
 assert_status() { # expected actual [label]
   assert_eq "$1" "$2" "${3:-exit status}"
 }
