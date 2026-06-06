@@ -11,6 +11,10 @@ export MOCK_CURL_ARGS_FILE="$(mktemp)"
 trap 'rm -f "$MOCK_CURL_ARGS_FILE"' EXIT
 export MD_PROMPT_API_KEY="mdnp_test"
 export MD_PROMPT_BASE_URL="http://api.test"
+# req runs as a shell function here, so the mock-curl subprocess only inherits
+# these if they're marked for export. (Script-level tests don't need this — they
+# invoke scripts as external processes that already carry the prefix-assigned env.)
+export MOCK_CURL_BODY MOCK_CURL_STATUS
 
 # 1. Success: body returned, args carry method/key/url.
 MOCK_CURL_STATUS=200 MOCK_CURL_BODY='{"id":"u1"}' out="$(req GET "")"

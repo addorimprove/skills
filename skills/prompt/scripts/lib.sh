@@ -59,10 +59,6 @@ req() {
     args+=(-H 'content-type: application/json' -d "$body")
   fi
 
-  # Propagate mock env vars to subprocesses when running under test harness.
-  [ -n "${MOCK_CURL_BODY+x}" ]   && export MOCK_CURL_BODY
-  [ -n "${MOCK_CURL_STATUS+x}" ] && export MOCK_CURL_STATUS
-
   local out status resp
   if ! out="$("${CURL:-curl}" "${args[@]}" "$url")"; then
     echo "Request failed (network error)." >&2
