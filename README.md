@@ -2,8 +2,9 @@
 
 Agent skills for the **addorimprove** app, installable via the
 [skills](https://skills.sh) CLI. Currently contains the **`prompt`** skill —
-reading and writing prompts (documents), versions, and comments, driven by the
-published `prompt` CLI (`npx @addorimprove/prompt`).
+reading and writing prompts (documents), versions, and comments, driven by
+bundled API scripts, with the published `prompt` CLI (`npx @addorimprove/prompt`)
+as a backup option.
 
 ## Install
 
@@ -21,12 +22,17 @@ npx skills add addorimprove/skills -a claude-code
 
 Lets your agent fetch, search, read, create, iterate, and publish/unpublish
 prompts/documents and their comments in the addorimprove app
-(`app.photosharingapp.com`) through the `prompt` CLI. The full instructions live in
-[`skills/prompt/SKILL.md`](skills/prompt/SKILL.md).
+(`addorimprove.com`). The full instructions live in
+[`skills/prompt/SKILL.md`](skills/prompt/SKILL.md). Detailed setup, command,
+write safety, workflow, comment, and version-label guidance is split into smaller
+files under [`skills/prompt/references/`](skills/prompt/references/). The CLI
+also includes `prompt restore-bundle [bundle.md] --output <dir>
+[--force] [-y]` for restoring Markdown bundles, with a folder-style preview,
+confirmation before files are written, and default refusal to overwrite existing files.
 
 ## Auth
 
-The skill drives `npx @addorimprove/prompt`, which uses a stored `mdnp_…` key.
+The skill scripts and `npx @addorimprove/prompt` use the same stored `mdnp_…` key.
 Log in once with:
 
 ```bash

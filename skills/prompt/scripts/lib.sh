@@ -2,11 +2,10 @@
 # Shared helpers for the prompt skill scripts. Source this; do not execute.
 # Resolution matches the @addorimprove/prompt CLI exactly.
 #
-# jq is PREFERRED but not strictly required. It is used here to read the stored
-# credential and to slice/unwrap response JSON. If jq is missing you have two
-# options: install it (`brew install jq`), or skip the jq-shaping scripts and
-# call `req` directly — it prints the raw API JSON to stdout, which the agent
-# (LLM) can parse on its own. curl is the only hard dependency.
+# jq and curl are required for the bundled scripts. jq reads stored credentials,
+# constructs request JSON, URL-encodes path/query values, and shapes responses.
+# If jq is missing, install it (`brew install jq`) or use the published
+# `prompt` CLI instead.
 
 prompt_config_path() {
   printf '%s/prompt/config.json' "${XDG_CONFIG_HOME:-$HOME/.config}"
