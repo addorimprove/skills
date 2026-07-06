@@ -21,6 +21,23 @@ It stores the key at `~/.config/prompt/config.json`.
 
 `MD_PROMPT_API_KEY` overrides the stored key.
 
+## CLI compatibility
+
+Files-format workflows require a `@addorimprove/prompt` CLI release with `bundle`,
+`restore-files`, and `--files` upload flags. Check before using those commands:
+
+```bash
+npx @addorimprove/prompt version --json
+```
+
+If the installed CLI is older than the files-workflow release, ask the user to run:
+
+```bash
+npx @addorimprove/prompt upgrade
+```
+
+or use the repo-local development CLI instructions when working from this repo.
+
 ## Target environment
 
 Scripts default to production:

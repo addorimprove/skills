@@ -58,6 +58,44 @@ than continue the same line:
 bash "$SKILL_DIR/scripts/branch.sh" <id> <parentLabel> -f <file>
 ```
 
+## Files-format folder workflows
+
+Use the CLI when local folders are involved. These workflows preview the file tree
+and default local writes under `.prompt/`.
+
+Create a files prompt from a folder:
+
+```bash
+npx @addorimprove/prompt new --name "Spec" --files ./spec
+```
+
+Update a files prompt from a changed folder:
+
+```bash
+npx @addorimprove/prompt iterate <id> --parent <label> --files ./spec
+```
+
+Branch a files prompt from a folder:
+
+```bash
+npx @addorimprove/prompt branch <id> --parent <label> --files ./spec
+```
+
+Restore a files version locally. Without `--output`, files are written to
+`.prompt/<id>/<label>/`:
+
+```bash
+npx @addorimprove/prompt restore-files <id> --version <label>
+```
+
+Only restore outside `.prompt/` when the user explicitly asks for a destination:
+
+```bash
+npx @addorimprove/prompt restore-files <id> --version <label> --output ./spec
+```
+
+Use `--force` only after explicit overwrite approval.
+
 ## Publish or unpublish
 
 After user approval:
