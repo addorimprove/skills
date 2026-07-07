@@ -34,6 +34,34 @@ printf '%s\n' "# Draft" > "$tmp"
 bash "$SKILL_DIR/scripts/new.sh" --name "Draft" -f "$tmp"
 ```
 
+## Files-format preview-before-upload rule
+
+For files-format uploads prepared by an agent, do not upload directly from a
+loose folder by default. First stage the exact payload under `./prompt/{id}/` in
+the current project working directory:
+
+```text
+./prompt/{id}/
+  files/
+  bundle.md
+```
+
+Before any upload, show the user:
+
+- selected file list
+- `./prompt/{id}/bundle.md` path
+- short bundle preview or summary
+- exact upload command using `-f ./prompt/{id}/bundle.md --format files`
+
+Then ask exactly:
+
+```text
+All good to upload ./prompt/{id}/bundle.md?
+```
+
+Only upload after approval. Leave `./prompt/{id}/` in place after upload. Do not
+create `manifest.json` by default.
+
 ## Upload/download previews
 
 The CLI shows folder-style file previews before file transfer actions:
@@ -43,6 +71,9 @@ The CLI shows folder-style file previews before file transfer actions:
   They reject paths outside the output folder such as `/tmp/file` or `../file`, and refuse
   to overwrite existing files by default. Use `--force` and/or `-y` only after explicit user approval.
 - Do not write restored files outside `.prompt/` unless the user explicitly specifies `--output <dir>`.
+- Staged files uploads use the local `./prompt/{id}/bundle.md` preview first, then
+  `new.sh`, `iterate.sh`, or `branch.sh` with `-f <bundle> --format files` after approval.
+  Prefer `stage-files.sh`; `prompt stage-files` is the CLI-equivalent staging command.
 - `prompt new -f`, `prompt iterate -f`, `prompt branch -f`, and the folder-based
   `--files <dir>` variants show `Files to upload:` before sending file content.
 
@@ -54,7 +85,8 @@ Previews are omitted under `--json` so scripts can parse the JSON output.
 - `html` stores sanitized HTML.
 - `plain` renders source verbatim in a `<pre>` and is best for code, logs, or any
   content where Markdown interpretation would be wrong.
-- `files` stores an ordered file/folder bundle. Prefer CLI `--files <dir>` for local
-  folders, or `--format files` when uploading an already serialized bundle file.
+- `files` stores an ordered file/folder bundle. Prefer staged
+  `./prompt/{id}/bundle.md` plus `--format files` for agent-prepared uploads;
+  use CLI `--files <dir>` only for explicit/ad hoc folder uploads.
 
 Plain is opt-in only. Auto-detection chooses `files` for canonical `FILE-TREE` bundles and otherwise chooses `mdx` or `html`.

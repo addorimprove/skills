@@ -26,7 +26,8 @@ prompts/documents and their comments in the addorimprove app
 [`skills/prompt/SKILL.md`](skills/prompt/SKILL.md). Detailed setup, command,
 write safety, workflow, comment, and version-label guidance is split into smaller
 files under [`skills/prompt/references/`](skills/prompt/references/). The CLI
-also includes `prompt restore-bundle [bundle.md] --output <dir>
+also includes `prompt stage-files --id <id> <file>...` as the CLI-equivalent
+staging workflow and `prompt restore-bundle [bundle.md] --output <dir>
 [--force] [-y]` for restoring Markdown bundles, with a folder-style preview,
 confirmation before files are written, and default refusal to overwrite existing files.
 

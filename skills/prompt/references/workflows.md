@@ -28,6 +28,104 @@ bash "$SKILL_DIR/scripts/view.sh" <id> <label>
    bash "$SKILL_DIR/scripts/new.sh" --name "<name>" -f <file> [--format mdx|html|plain]
    ```
 
+## Create or update a files-format prompt from selected files
+
+Use this staged workflow when an agent prepares a files-format prompt/document.
+The goal is to create the exact upload payload locally, show it to the user, and
+upload only after explicit approval.
+
+Staging lives in `./prompt/{id}/` in the current project working directory:
+
+```text
+./prompt/{id}/
+  files/
+  bundle.md
+```
+
+ID convention:
+
+- Existing document/version workflows: use the server document id, for example
+  `./prompt/49/`.
+- New document workflows before a server id exists: use a local staging id, for
+  example `./prompt/new-refactoring-guru-scraper/`.
+- Staging ids must start with a letter or digit and contain only letters,
+  digits, dots, underscores, and hyphens.
+- After upload, leave the staging directory as-is. Optionally copy/rename it to
+  the returned server doc id, but do not remove it.
+
+Required files only:
+
+- `files/` contains the selected files exactly as they will be bundled,
+  preserving relative paths.
+- `bundle.md` contains the exact files-format upload payload.
+- Do not create `manifest.json` by default.
+
+Canonical `bundle.md` structure:
+
+````md
+<!-- FILE-TREE -->
+```yaml
+- README.md
+- pyproject.toml
+- scrape_refactoring_guru.py
+```
+
+<!-- FILE-CONTENT: README.md -->
+~~~~md
+...
+~~~~
+````
+
+Workflow:
+
+1. Select the minimum files needed for the prompt/document.
+2. Create `./prompt/{id}/files/` and copy selected files into it, preserving
+   relative paths.
+3. Generate `./prompt/{id}/bundle.md` in the canonical structure above.
+   Prefer the local preview-only skill helper:
+   ```bash
+   bash "$SKILL_DIR/scripts/stage-files.sh" --id <id> [--name "<name>"] [--force] <file>...
+   ```
+   CLI equivalent for humans or non-skill contexts:
+   ```bash
+   npx @addorimprove/prompt stage-files --id <id> [--name "<name>"] [--force] <file>...
+   ```
+4. Show the user:
+   - selected file list
+   - bundle path
+   - short bundle preview or summary
+   - exact upload command
+5. Ask exactly:
+   ```text
+   All good to upload ./prompt/{id}/bundle.md?
+   ```
+6. Upload only after approval.
+
+New document upload:
+
+```bash
+bash "$SKILL_DIR/scripts/new.sh" \
+  --name "<name>" \
+  -f ./prompt/{id}/bundle.md \
+  --format files
+```
+
+Iterate an existing files-format document:
+
+```bash
+bash "$SKILL_DIR/scripts/iterate.sh" <id> --parent <label> \
+  -f ./prompt/<id>/bundle.md \
+  --format files
+```
+
+Branch an existing files-format document:
+
+```bash
+bash "$SKILL_DIR/scripts/branch.sh" <id> <parentLabel> \
+  -f ./prompt/<id>/bundle.md \
+  --format files
+```
+
 ## Improve from feedback
 
 1. Read the doc tree:
@@ -58,24 +156,27 @@ than continue the same line:
 bash "$SKILL_DIR/scripts/branch.sh" <id> <parentLabel> -f <file>
 ```
 
-## Files-format folder workflows
+## Direct files-format folder workflows (fallback)
 
-Use the CLI when local folders are involved. These workflows preview the file tree
-and default local writes under `.prompt/`.
+Prefer the staged selected-files workflow above for agent-prepared uploads. Use
+these direct folder commands only when the user explicitly wants to upload an
+entire folder without a persistent `./prompt/{id}/bundle.md` staging preview.
+The CLI previews the file tree before upload, and restore commands default local
+writes under `.prompt/`.
 
-Create a files prompt from a folder:
+Create a files prompt directly from a folder:
 
 ```bash
 npx @addorimprove/prompt new --name "Spec" --files ./spec
 ```
 
-Update a files prompt from a changed folder:
+Update a files prompt directly from a changed folder:
 
 ```bash
 npx @addorimprove/prompt iterate <id> --parent <label> --files ./spec
 ```
 
-Branch a files prompt from a folder:
+Branch a files prompt directly from a folder:
 
 ```bash
 npx @addorimprove/prompt branch <id> --parent <label> --files ./spec

@@ -24,7 +24,9 @@ It stores the key at `~/.config/prompt/config.json`.
 ## CLI compatibility
 
 Files-format workflows require a `@addorimprove/prompt` CLI release with `bundle`,
-`restore-files`, and `--files` upload flags. Check before using those commands:
+`stage-files`, `restore-files`, and `--files` upload flags. The skill
+`stage-files.sh` helper is self-contained, but the CLI-equivalent staging command
+requires a matching CLI release. Check before using those commands:
 
 ```bash
 npx @addorimprove/prompt version --json
