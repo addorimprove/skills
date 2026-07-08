@@ -76,7 +76,7 @@ req() {
       msg="$(printf '%s' "$resp" | jq -r '.error.message // empty' 2>/dev/null)"
       [ -n "$msg" ] || msg="HTTP $status"
       case "$status" in
-        409) echo "Label conflict — $msg" >&2 ;;
+        409) echo "Conflict — $msg" >&2 ;;
         400) printf '%s\n' "$msg" >&2 ;;
         *)   echo "Request failed ($status): $msg" >&2 ;;
       esac

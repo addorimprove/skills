@@ -22,11 +22,67 @@ bash "$SKILL_DIR/scripts/view.sh" <id> <label>
 ## Create a new prompt
 
 1. Draft content in a temp file.
-2. Get user approval.
-3. Run:
+2. If creating inside a folder, list/confirm the destination folder id/path first.
+3. Get user approval.
+4. Run:
    ```bash
-   bash "$SKILL_DIR/scripts/new.sh" --name "<name>" -f <file> [--format mdx|html|plain]
+   bash "$SKILL_DIR/scripts/new.sh" --name "<name>" [--folder <folderId>] -f <file> [--format mdx|html|plain]
    ```
+
+## Folder organization
+
+List root folders and documents:
+
+```bash
+bash "$SKILL_DIR/scripts/folders.sh"
+```
+
+List a nested folder's contents:
+
+```bash
+bash "$SKILL_DIR/scripts/folders.sh" ls --parent 123
+```
+
+Create folders after approval:
+
+```bash
+bash "$SKILL_DIR/scripts/folders.sh" create "Ideas"
+bash "$SKILL_DIR/scripts/folders.sh" create "Drafts" --parent 123
+```
+
+Create a new prompt/document in a folder:
+
+```bash
+bash "$SKILL_DIR/scripts/new.sh" --name "Spec" --folder 123 -f ./spec.md
+```
+
+Move an existing prompt/document after confirming the source document id/name and
+destination folder id/path:
+
+```bash
+bash "$SKILL_DIR/scripts/move-doc.sh" 456 --folder 123
+```
+
+Move a document back to root:
+
+```bash
+bash "$SKILL_DIR/scripts/move-doc.sh" 456 --folder root
+```
+
+Delete an empty folder only after confirming the folder id/path and that deletion
+is intended:
+
+```bash
+bash "$SKILL_DIR/scripts/folders.sh" delete 123
+```
+
+Safety notes:
+
+- Folder delete is destructive but only succeeds when the folder is empty.
+- Moving a document changes organization only; versions/content are unchanged.
+- Before any folder write, preview the intended target and get user approval.
+- For `move-doc.sh`, confirm source document id/name and destination folder id/path.
+- For `folders.sh delete`, confirm folder id/path and deletion intent.
 
 ## Create or update a files-format prompt from selected files
 
@@ -106,6 +162,7 @@ New document upload:
 ```bash
 bash "$SKILL_DIR/scripts/new.sh" \
   --name "<name>" \
+  [--folder <folderId>] \
   -f ./prompt/{id}/bundle.md \
   --format files
 ```
@@ -167,7 +224,7 @@ writes under `.prompt/`.
 Create a files prompt directly from a folder:
 
 ```bash
-npx @addorimprove/prompt new --name "Spec" --files ./spec
+npx @addorimprove/prompt new --name "Spec" [--folder 123] --files ./spec
 ```
 
 Update a files prompt directly from a changed folder:

@@ -1,7 +1,7 @@
 ---
 name: prompt
 description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, iterate, branch, publish, restore files, or comment on prompts/documents in the markdown-notes app (addorimprove.com). Prefer bundled scripts for API reads/writes; use the published `prompt` CLI for login, version/upgrade, and local files workflows.
-compatibility: "Requires @addorimprove/prompt CLI with files workflow support: bundle, stage-files, restore-files, and --files upload flags. Check with `npx @addorimprove/prompt version --json`; if too old, run `npx @addorimprove/prompt upgrade` or use the repo-local development CLI."
+compatibility: "Requires @addorimprove/prompt CLI with files and folder workflow support: bundle, stage-files, restore-files, folders, docs move, and --files/--folder upload flags. Check with `npx @addorimprove/prompt version --json`; if too old, run `npx @addorimprove/prompt upgrade` or use the repo-local development CLI."
 ---
 
 # Prompt
@@ -11,14 +11,16 @@ markdown-notes app.
 
 ## Routing
 
-- **Default path:** use bundled scripts in `scripts/` for document reads/writes.
-  For files-format uploads, stage selected files under `./prompt/{id}/` and
-  upload `bundle.md` with `--format files` only after approval.
+- **Default path:** use bundled scripts in `scripts/` for document reads/writes
+  and folder organization reads/writes. For files-format uploads, stage selected
+  files under `./prompt/{id}/` and upload `bundle.md` with `--format files` only
+  after approval.
 - **CLI commands:** use `npx @addorimprove/prompt` for `login`, `version`,
   `upgrade`, `bundle`, `stage-files` equivalents, `restore-bundle`,
   `restore-files`, and explicit/ad hoc folder-based `--files` workflows.
 - **Write safety rule:** get the user's go-ahead in chat before any write; files
-  uploads require staged preview before upload.
+  uploads require staged preview before upload. For folder moves/deletes, confirm
+  the source document or folder and destination folder/root first.
 
 ## Quick start
 
@@ -39,7 +41,7 @@ markdown-notes app.
 Read only the file needed for the task:
 
 - `references/setup.md` — login, target environment, script execution rules.
-- `references/commands.md` — bundled script inventory and CLI utilities.
+- `references/commands.md` — bundled script inventory, folder commands, and CLI utilities.
 - `references/write-safety.md` — write approvals, upload/download previews, JSON output.
 - `references/workflows.md` — common list/read/create/improve recipes.
 - `references/comments.md` — comment anchoring, replies, resolve behavior.
