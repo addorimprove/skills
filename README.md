@@ -22,7 +22,7 @@ npx skills add addorimprove/skills -a claude-code
 
 Lets your agent fetch, search, read, create, iterate, and publish/unpublish
 prompts/documents and their comments in the addorimprove app
-(`addorimprove.com`). The full instructions live in
+(`markdown-notes-ten.vercel.app`). The full instructions live in
 [`skills/prompt/SKILL.md`](skills/prompt/SKILL.md). Detailed setup, command,
 write safety, workflow, comment, and version-label guidance is split into smaller
 files under [`skills/prompt/references/`](skills/prompt/references/). The CLI

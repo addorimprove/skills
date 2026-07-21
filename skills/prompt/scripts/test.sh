@@ -6,7 +6,7 @@ set -euo pipefail
 S="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 base="${MD_PROMPT_BASE_URL:-}"
 case "$base" in
-  ""|*addorimprove.com*) echo "Refusing to run: set MD_PROMPT_BASE_URL to a dev URL (not prod)." >&2; exit 1 ;;
+  ""|*addorimprove.com*|*markdown-notes-ten.vercel.app*) echo "Refusing to run: set MD_PROMPT_BASE_URL to a dev URL (not prod)." >&2; exit 1 ;;
 esac
 
 echo "whoami:";    bash "$S/whoami.sh" | jq -e '.id' >/dev/null

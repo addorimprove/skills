@@ -14,7 +14,7 @@ mkdir -p "$XDG_CONFIG_HOME/prompt"
 
 # 1. Default base URL when nothing set.
 unset MD_PROMPT_BASE_URL MD_PROMPT_API_KEY
-assert_eq "https://addorimprove.com" "$(resolve_base_url "")" "default base url"
+assert_eq "https://markdown-notes-ten.vercel.app" "$(resolve_base_url "")" "default base url"
 
 # 2. Config baseUrl beats default.
 printf '{"apiKey":"mdnp_cfg","baseUrl":"http://cfg.example"}' > "$XDG_CONFIG_HOME/prompt/config.json"
