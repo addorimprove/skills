@@ -1,99 +1,97 @@
 # Commands
 
-## Bundled scripts (preferred)
+Use **Folder** for organization, **Document** for content, and **Files** only for
+the ordered-tree Document kind. Get approval before every write.
 
-Run these with `bash "$SKILL_DIR/scripts/<script>" ...`. The `*-files.sh`
-wrappers validate required files-workflow arguments before delegating to the CLI.
+## Bundled scripts (preferred JSON path)
 
-| Goal | Script | Output |
-|------|--------|--------|
-| Who am I | `whoami.sh` | `{ id, name, email }` |
-| Recent activity | `recent.sh [-n <limit>]` | activity array, most-recent-first |
-| List / search docs | `ls.sh [-q <query>]` | docs array (`{ id, name, openCommentCount, … }`) |
-| Doc tree + latest content | `view.sh <id>` | `{ id, name, versions:[…], latest:{label,content} }` |
-| One version's content | `view.sh <id> <label>` | `{ label, content, format, … }` |
-| Version comments | `comments.sh <id> <label>` | comments array, pre-sorted |
-| Create a doc | `new.sh --name "<name>" [--folder <folderId>] -f <file> [--format mdx\|html\|plain\|files]` | `{ id, label:"1-1" }` |
-| List folders/docs | `folders.sh [ls] [--parent <folderId>]` | folder contents with `folders`, `documents`, and `folderOptions` |
-| Create a folder | `folders.sh create "<name>" [--parent <folderId>]` | `{ id, name, parentFolderId, … }` |
-| Delete an empty folder | `folders.sh delete <folderId>` | empty success (`204`) |
-| Move a doc | `move-doc.sh <docId> --folder <folderId\|root>` | `{ documentId, fromFolderId, toFolderId }` |
-| Stage selected files locally | `stage-files.sh --id <id> [--name "<name>"] [--force] <file>...` | `./prompt/<id>/files/` + `bundle.md` preview; no upload |
-| Add version on same line | `iterate.sh <id> [--parent <label>] -f <file> [--format]` | `{ label }` |
-| Fork a branch line | `branch.sh <id> <parentLabel> -f <file> [--format]` | `{ label }` |
-| Create files doc from folder (direct fallback) | `new-files.sh --name "<name>" --files <dir> [-y]` | CLI output |
-| Iterate files doc from folder (direct fallback) | `iterate-files.sh <id> --parent <label> --files <dir> [-y]` | CLI output |
-| Branch files doc from folder (direct fallback) | `branch-files.sh <id> --parent <label> --files <dir> [-y]` | CLI output |
-| Restore files version | `restore-files.sh <id> [--version <label>] [--output <dir>] [--force] [-y]` | CLI output |
-| Change visibility | `visibility.sh <id> <label> public\|private` | `{ label, isPublic, publicSlug, publicUrl }` |
-| Add a comment | `comment-add.sh <id> <label> --body "<text>" [--quote "<text>"]` | `{ id }` |
-| Reply to a comment | `comment-reply.sh <id> <label> <commentId> --body "<text>"` | `{ id }` |
-| Resolve / unresolve | `comment-resolve.sh <id> <label> <commentId> [--unresolve]` | `{ id, resolved }` |
+Run `bash "$SKILL_DIR/scripts/<script>" ...`.
 
-## Staged files-format upload commands
+| Goal | Command |
+|---|---|
+| Account | `whoami.sh` |
+| List/search Documents | `ls.sh [-q <query>]` |
+| Recent Documents | `recent.sh [-n <limit>]` |
+| Read Document/latest snapshot | `view.sh <documentId>` |
+| Read exact snapshot | `view.sh <documentId> <label>` |
+| List Folder contents | `folders.sh [ls] [--parent <folderId>]` |
+| Create Folder | `folders.sh create "<name>" [--parent <folderId>]` |
+| Delete empty Folder | `folders.sh delete <folderId>` |
+| Move Document | `move-doc.sh <documentId> --folder <folderId|root>` |
+| Create Document | `new.sh --name "<name>" --kind markdown|mdx|html|plain|files [--versioning on|off] [--folder <id|root>] -f <file>` |
+| Iterate snapshot | `iterate.sh <documentId> [--parent <label>] -f <file> [--format ...]` |
+| Branch snapshot | `branch.sh <documentId> <parentLabel> -f <file> [--format ...]` |
+| Snapshot Comments | `comments.sh <documentId> <label>` |
+| Live Comments | `comments.sh <documentId> current [--path <logicalPath>]` |
+| Add snapshot Comment | `comment-add.sh <id> <label> --body "<text>" [--path <path> [--start <n> --end <n> --quote "<text>" --context "<text>"]]` |
+| Add live Comment | `comment-add.sh <id> current --path <path> --observed-revision <n> --body "<text>" [--start <n> --end <n> --quote "<text>" --context "<text>"]` |
+| Reply snapshot | `comment-reply.sh <id> <label> <commentId> --body "<text>"` |
+| Reply live | `comment-reply.sh <id> current <commentId> --expected-mutation-revision <n> --body "<text>"` |
+| Resolve/reopen snapshot | `comment-resolve.sh <id> <label> <commentId> [--unresolve]` |
+| Resolve/reopen live | `comment-resolve.sh <id> current <commentId> --expected-mutation-revision <n> [--reopen]` |
+| Snapshot publication | `visibility.sh <id> <label> public|private` |
+| Read live publication | `visibility.sh <id> current` |
+| Change live publication | `visibility.sh <id> current public|private` |
 
-For agent-prepared files uploads, first stage selected files under
-`./prompt/{id}/` and preview `bundle.md`. The skill script is the preferred
-entrypoint; the CLI has an equivalent command to keep human and agent workflows
-in sync. Upload only after the user approves the exact bundle path.
+`new.sh` retains `--format` and deprecated `--project` aliases. Omitted
+`--versioning` still means On. Explicit `--folder root` sends `folderId:null`.
 
-Create a new files-format document:
+## Files staging and raw uploads
 
-```bash
-bash "$SKILL_DIR/scripts/new.sh" \
-  --name "<name>" \
-  [--folder <folderId>] \
-  -f ./prompt/{id}/bundle.md \
-  --format files
-```
+### Agent-prepared text Files
 
-Iterate an existing files-format document:
+Stage selected text Files first:
 
 ```bash
-bash "$SKILL_DIR/scripts/iterate.sh" <id> --parent <label> \
-  -f ./prompt/<id>/bundle.md \
-  --format files
+bash "$SKILL_DIR/scripts/stage-files.sh" --id <staging-id> [--name "<name>"] [--force] <file>...
 ```
 
-Branch an existing files-format document:
+This writes `./prompt/<staging-id>/files/` and `bundle.md` but does not upload.
+After showing the exact tree and bundle and receiving approval, create with:
 
 ```bash
-bash "$SKILL_DIR/scripts/branch.sh" <id> <parentLabel> \
-  -f ./prompt/<id>/bundle.md \
-  --format files
+bash "$SKILL_DIR/scripts/new.sh" --name "<name>" --kind files \
+  [--versioning on|off] [--folder <id|root>] \
+  -f ./prompt/<staging-id>/bundle.md
 ```
 
-## CLI utilities
+Versioning-On updates may use the existing `iterate.sh` / `branch.sh`
+`--format files` compatibility path. Versioning Off has no iterate or branch.
 
-Use the published CLI for browser login, npm updates, ad hoc local folder
-upload, and files restore workflows. Prefer the staged bundle workflow above for
-agent-prepared uploads:
+### Complete/binary Files trees
 
-| Goal | CLI |
-|------|-----|
-| Login | `npx @addorimprove/prompt login` |
-| Check CLI version | `npx @addorimprove/prompt version --json` |
-| Self-update CLI | `npx @addorimprove/prompt upgrade` |
-| Build files bundle from folder | `npx @addorimprove/prompt bundle <dir> [--output .prompt/bundles/name.md] [-y] [--json]` |
-| Stage selected files locally (CLI equivalent) | `npx @addorimprove/prompt stage-files --id <id> [--name "Spec"] [--force] <file>... [--json]` |
-| List root folders/docs | `npx @addorimprove/prompt folders` |
-| List nested folder contents | `npx @addorimprove/prompt folders ls --parent 123` |
-| Create root folder | `npx @addorimprove/prompt folders create "Ideas"` |
-| Create nested folder | `npx @addorimprove/prompt folders create "Drafts" --parent 123` |
-| Delete empty folder | `npx @addorimprove/prompt folders delete 123` |
-| Create files doc from folder | `npx @addorimprove/prompt new --name "Spec" [--folder 123] --files ./spec [-y] [--json]` |
-| Move doc to folder | `npx @addorimprove/prompt docs move 456 --folder 123` |
-| Move doc to root | `npx @addorimprove/prompt docs move 456 --folder root` |
-| Iterate files doc from folder | `npx @addorimprove/prompt iterate <id> --parent <label> --files ./spec [-y] [--json]` |
-| Branch files doc from folder | `npx @addorimprove/prompt branch <id> --parent <label> --files ./spec [-y] [--json]` |
-| Restore local bundle | `npx @addorimprove/prompt restore-bundle [bundle.md] [--output <dir>] [--force] [-y] [--json]` |
-| Restore files version | `npx @addorimprove/prompt restore-files <id> [--version <label>] [--output <dir>] [--force] [-y] [--json]` |
+Use the repository CLI so multipart bytes, canonical metadata, explicit order,
+and empty Directories are preserved:
 
-If you use the CLI for write commands (`new`, `iterate`, `branch`, folder
-create/delete, or document move), preview the target and get approval first. Pass
-`-f <file>` to avoid opening `$EDITOR` and `-y` to skip the CLI confirmation
-prompt only after approval. For files-format uploads, prefer the staged
-`./prompt/{id}/bundle.md` workflow and bundled scripts unless the user explicitly
-asks for direct folder upload.
+```bash
+npx @addorimprove/prompt new --name "<name>" --kind files \
+  --files <directory> [--versioning on|off] [--folder <id|root>]
 
-Files-format bundles use `<!-- FILE-TREE -->` plus `<!-- FILE-CONTENT: path -->` sections. `restore-bundle` also keeps legacy `<!-- FILE: path -->` support. Restore commands default to `.prompt/` (`.prompt/bundles/<bundle>/` or `.prompt/<id>/<label>/`) unless `--output <dir>` is explicitly supplied. They show a folder-style preview and ask for confirmation before writing files, reject paths outside the output folder such as `/tmp/file` or `../file`, refuse to overwrite existing files unless `--force` is passed, and omit the preview under `--json`. Pass `-y` only after explicit approval.
+npx @addorimprove/prompt files create "<name>" --files <directory> \
+  [--versioning on|off] [--folder <id|root>]
+npx @addorimprove/prompt files ls <documentId> [--snapshot <snapshotId>]
+npx @addorimprove/prompt files pull <documentId> [--snapshot <snapshotId>] [--output <dir>]
+npx @addorimprove/prompt files push <documentId> --files <directory> --expected-revision <n>
+npx @addorimprove/prompt files delete <documentId> --files <pruned-directory> --expected-revision <n>
+npx @addorimprove/prompt files snapshot <documentId> --files <directory> --parent <label> --intent iterate|branch
+```
+
+`files delete` publishes a confirmed pruned current tree and is destructive.
+`files snapshot`, iterate, and branch require Versioning On.
+
+## Other CLI utilities
+
+```bash
+npx @addorimprove/prompt login
+npx @addorimprove/prompt version --json
+npx @addorimprove/prompt upgrade
+npx @addorimprove/prompt folders [ls] [--parent <id>]
+npx @addorimprove/prompt docs [ls] [-q <query>]
+npx @addorimprove/prompt docs move <documentId> --folder <id|root>
+npx @addorimprove/prompt bundle <dir> [--output <file>]
+npx @addorimprove/prompt restore-bundle [bundle.md] [--output <dir>] [--force]
+npx @addorimprove/prompt restore-files <id> [--version <label>] [--output <dir>] [--force]
+```
+
+Compatibility aliases remain: `projects`, `--project`, `--format`, `ls`, and
+legacy bundle/restore commands. Their routes, JSON fields, and IDs are unchanged.

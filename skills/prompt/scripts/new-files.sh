@@ -35,4 +35,4 @@ if [ "$has_name" -ne 1 ] || [ "$has_files" -ne 1 ]; then
   exit 2
 fi
 
-exec npx @addorimprove/prompt new "${args[@]}"
+exec npx @addorimprove/prompt new --kind files "${args[@]}"

@@ -20,6 +20,16 @@ assert_contains "$args" "-X POST" "new --folder method"
 assert_contains "$args" "/docs" "new --folder path"
 assert_contains "$args" '"folderId": 12' "new --folder body"
 
+# deprecated --project remains the same folderId wire alias
+out="$(MOCK_CURL_BODY='{"id":6,"label":"1-1"}' bash "$S/new.sh" --name "Legacy alias" --project 12 -f "$BODYFILE")"
+assert_eq "6" "$(printf '%s' "$out" | jq -r '.id')" "new --project id"
+assert_contains "$(cat "$MOCK_CURL_ARGS_FILE")" '"folderId": 12' "new --project body"
+
+# explicit root placement remains folderId:null
+out="$(MOCK_CURL_BODY='{"id":7,"label":"1-1"}' bash "$S/new.sh" --name "Root Document" --folder root -f "$BODYFILE")"
+assert_eq "7" "$(printf '%s' "$out" | jq -r '.id')" "new root id"
+assert_contains "$(cat "$MOCK_CURL_ARGS_FILE")" '"folderId": null' "new root body"
+
 # folders ls root and nested
 out="$(MOCK_CURL_BODY='{"folders":[],"documents":[],"folderOptions":[]}' bash "$S/folders.sh")"
 assert_eq "0" "$(printf '%s' "$out" | jq -r '.folders | length')" "folders root parses"

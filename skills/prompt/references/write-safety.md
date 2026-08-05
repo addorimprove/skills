@@ -1,44 +1,53 @@
 # Write safety rules
 
-## Human approval before writes
+## Approval is mandatory
 
-Get the user's go-ahead in chat before any write:
+Get the user's explicit go-ahead before every write, including:
 
-- `new.sh`
-- `iterate.sh`
-- `branch.sh`
-- `visibility.sh`
-- `comment-add.sh`
-- `comment-reply.sh`
-- `comment-resolve.sh`
-- CLI write commands such as `prompt bundle`, `prompt new --files`, `prompt iterate --files`, `prompt branch --files`, `prompt restore-bundle`, and `prompt restore-files`
-- Any use of `prompt restore-bundle --force` or `prompt restore-files --force`
+- creating a Folder or Document;
+- moving a Document or deleting a Folder;
+- creating a snapshot, iterating, or branching;
+- publishing or unpublishing a snapshot or live-current Document;
+- adding, replying to, resolving, or reopening Comments;
+- staging/bundling local Files, uploading, restoring, overwriting, or pruning;
+- any `--force`, `-y`, logical delete, or destination outside `.prompt/`.
 
-Bundled scripts do not prompt. They act immediately.
+Bundled scripts act immediately and do not prompt. `-y` may be used only after
+approval. JSON output suppresses CLI previews and never counts as user review.
 
-## Write bodies
+## Document bodies
 
-Document/version bodies (`new.sh`, `iterate.sh`, `branch.sh`) always come from `-f <file>`. Comment bodies use `--body <text>`.
+Document/snapshot bodies come from `-f <file>`; Comment bodies use `--body`.
+Show the exact proposed source/summary, Document id/name, Document kind,
+Versioning mode, and destination Folder/root before creation.
 
-Recommended document/version flow:
-
-1. Write the proposed body to a temp file.
-2. Tell the user what will be written.
-3. After approval, pass the file to the script.
-
-Example:
+Canonical creation:
 
 ```bash
-tmp="$(mktemp)"
-printf '%s\n' "# Draft" > "$tmp"
-bash "$SKILL_DIR/scripts/new.sh" --name "Draft" -f "$tmp"
+bash "$SKILL_DIR/scripts/new.sh" --name "<name>" \
+  --kind markdown|mdx|html|plain|files \
+  [--versioning on|off] [--folder <id|root>] -f <file>
 ```
 
-## Files-format preview-before-upload rule
+Versioning defaults On and cannot be changed later. Verify a Versioning-Off
+response has `currentRevision` and no label/snapshot identity.
 
-For files-format uploads prepared by an agent, do not upload directly from a
-loose folder by default. First stage the exact payload under `./prompt/{id}/` in
-the current project working directory:
+## Folder moves and deletion
+
+Before a move, confirm:
+
+- source Document id and name;
+- current Folder/root when known;
+- destination Folder id/path or root.
+
+Before Folder deletion, confirm Folder id/path and intent. Deletion succeeds only
+for an empty Folder but is still destructive.
+
+## Files preview before upload
+
+### Agent-prepared text bundle
+
+Stage exact selected Files under:
 
 ```text
 ./prompt/{id}/
@@ -46,47 +55,72 @@ the current project working directory:
   bundle.md
 ```
 
-Before any upload, show the user:
+Show:
 
-- selected file list
-- `./prompt/{id}/bundle.md` path
-- short bundle preview or summary
-- exact upload command using `-f ./prompt/{id}/bundle.md --format files`
+- selected File list;
+- `./prompt/{id}/bundle.md` path;
+- short bundle preview/summary;
+- exact upload command.
 
-Then ask exactly:
+Ask exactly:
 
 ```text
 All good to upload ./prompt/{id}/bundle.md?
 ```
 
-Only upload after approval. Leave `./prompt/{id}/` in place after upload. Do not
-create `manifest.json` by default.
+Only then upload. Keep the staging Directory after upload. Do not create
+`manifest.json` by default.
 
-## Upload/download previews
+### Complete/binary Files tree
 
-The CLI shows folder-style file previews before file transfer actions:
+Markdown bundles are not binary-safe and cannot represent the canonical raw
+upload contract. For binary Files, explicit empty Directories, or a complete
+ordered tree:
 
-- `prompt restore-bundle ...` and `prompt restore-files ...` show `Files to download:` and ask
-  for confirmation before writing files. Without `--output`, they write under `.prompt/`.
-  They reject paths outside the output folder such as `/tmp/file` or `../file`, and refuse
-  to overwrite existing files by default. Use `--force` and/or `-y` only after explicit user approval.
-- Do not write restored files outside `.prompt/` unless the user explicitly specifies `--output <dir>`.
-- Staged files uploads use the local `./prompt/{id}/bundle.md` preview first, then
-  `new.sh`, `iterate.sh`, or `branch.sh` with `-f <bundle> --format files` after approval.
-  Prefer `stage-files.sh`; `prompt stage-files` is the CLI-equivalent staging command.
-- `prompt new -f`, `prompt iterate -f`, `prompt branch -f`, and the folder-based
-  `--files <dir>` variants show `Files to upload:` before sending file content.
+1. stage/validate the entire Directory;
+2. show the complete tree, primary File, mode, and Folder/root destination;
+3. obtain approval;
+4. use `prompt new --kind files --files` or `prompt files create`.
 
-Previews are omitted under `--json` so scripts can parse the JSON output.
+Never route binary through bundle text. Raw upload checks each byte count and
+checksum and never exposes R2 keys.
 
-## Format choice
+## Versioning-Off current writes
 
-- `mdx` means Markdown in this app; JSX and expressions are unsupported.
-- `html` stores sanitized HTML.
-- `plain` renders source verbatim in a `<pre>` and is best for code, logs, or any
-  content where Markdown interpretation would be wrong.
-- `files` stores an ordered file/folder bundle. Prefer staged
-  `./prompt/{id}/bundle.md` plus `--format files` for agent-prepared uploads;
-  use CLI `--files <dir>` only for explicit/ad hoc folder uploads.
+`files push` and logical `files delete` require the editor-loaded
+`--expected-revision`. On `stale_revision`, retain the local work, refresh,
+reconcile, preview again, and ask before retrying. Never substitute the server's
+new revision automatically.
 
-Plain is opt-in only. Auto-detection chooses `files` for canonical `FILE-TREE` bundles and otherwise chooses `mdx` or `html`.
+Current Comment creation requires the observed content revision. Reply,
+resolve, and reopen require the latest thread `mutationRevision`. On
+`stale_comment`, relist and reconcile; do not blind-retry.
+
+## Publication
+
+Confirm exact target and resulting behavior:
+
+- snapshot target `<label>` freezes one immutable snapshot;
+- target `current` is a stable live slug to latest committed Versioning-Off
+  content;
+- unpublish reserves either existing slug for reuse;
+- Comments and Scratchpad remain private.
+
+## Restore/download safety
+
+Restore commands:
+
+- default under `.prompt/`;
+- preview every output File;
+- reject absolute/traversal paths and symlink escapes;
+- refuse overwrite unless `--force` is explicitly approved;
+- write elsewhere only when the user explicitly supplies `--output <dir>`.
+
+Local `bundle`, `stage-files`, restore, and overwrite are writes too; approval
+still applies even though they do not mutate the remote app.
+
+## Legacy aliases
+
+`projects`, `--project`, `--format`, `--unresolve`, and legacy bundle workflows
+remain supported. Approval and preview rules are identical when aliases are
+used; compatibility names do not change durable IDs or JSON fields.

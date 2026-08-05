@@ -31,6 +31,17 @@ assert_status 2 "$rc" "comment-resolve non-numeric cid rejected"
 err="$(bash "$S/recent.sh" -n "5&x=1" 2>&1)"; rc=$?
 assert_status 2 "$rc" "recent non-numeric limit rejected"
 
+# Changed scripts reject missing option values with controlled usage errors.
+err="$(bash "$S/new.sh" --name 2>&1)"; rc=$?
+assert_status 2 "$rc" "new missing option value rejected"
+assert_contains "$err" "--name requires a value" "new missing value message"
+assert_not_contains "$err" "unbound variable" "new no shell leak"
+
+err="$(bash "$S/comment-add.sh" 7 current --body note --path 2>&1)"; rc=$?
+assert_status 2 "$rc" "comment-add missing option value rejected"
+assert_contains "$err" "--path requires a value" "comment-add missing value message"
+assert_not_contains "$err" "unbound variable" "comment-add no shell leak"
+
 # Valid numeric id still works (reaches curl).
 : > "$MOCK_CURL_ARGS_FILE"
 bash "$S/view.sh" 7 >/dev/null

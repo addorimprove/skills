@@ -39,7 +39,7 @@ run_fail() {
 }
 
 run_ok "$S/new-files.sh" --name Spec --files ./spec -y
-assert_eq $'npx\t@addorimprove/prompt\tnew\t--name\tSpec\t--files\t./spec\t-y' "$(cat "$CALLS")" "new-files delegates"
+assert_eq $'npx\t@addorimprove/prompt\tnew\t--kind\tfiles\t--name\tSpec\t--files\t./spec\t-y' "$(cat "$CALLS")" "new-files delegates canonically"
 assert_not_contains "$(cat "$CALLS")" "--force" "new-files does not add force"
 
 run_ok "$S/iterate-files.sh" 7 --parent 1-1 --files ./spec -y

@@ -43,4 +43,26 @@ args="$(cat "$MOCK_CURL_ARGS_FILE")"
 assert_contains "$args" "-X PATCH" "visibility method"
 assert_contains "$args" "/docs/5/versions/1-1" "visibility path"
 
+# canonical Document creation adds kind/mode while keeping format available
+out="$(MOCK_CURL_BODY='{"id":6,"versioning":"off","currentRevision":1}' bash "$S/new.sh" --name Plain --kind plain --versioning off --folder root -f "$BODYFILE")"
+assert_eq "1" "$(printf '%s' "$out" | jq -r '.currentRevision')" "current creation revision"
+args="$(cat "$MOCK_CURL_ARGS_FILE")"
+assert_contains "$args" '"contentKind": "plain"' "new kind"
+assert_contains "$args" '"versioning": "off"' "new mode"
+assert_contains "$args" '"folderId": null' "new root placement"
+assert_not_contains "$args" 'snapshotId' "current creation has no fake snapshot"
+
+# live publication reads state and mutates a stable current resource
+out="$(MOCK_CURL_BODY='{"documentId":5,"mode":"current","snapshotId":null,"isPublic":false,"publicSlug":"LIVE1","publicUrl":null}' bash "$S/visibility.sh" 5 current)"
+assert_eq "LIVE1" "$(printf '%s' "$out" | jq -r '.publicSlug')" "live reserved slug"
+args="$(cat "$MOCK_CURL_ARGS_FILE")"
+assert_contains "$args" "-X GET" "live visibility read method"
+assert_contains "$args" "/docs/5/current/publication" "live visibility path"
+
+out="$(MOCK_CURL_BODY='{"documentId":5,"mode":"current","snapshotId":null,"isPublic":true,"publicSlug":"LIVE1"}' bash "$S/visibility.sh" 5 current public)"
+assert_eq "LIVE1" "$(printf '%s' "$out" | jq -r '.publicSlug')" "live publish stable slug"
+args="$(cat "$MOCK_CURL_ARGS_FILE")"
+assert_contains "$args" "-X PATCH" "live publish method"
+assert_contains "$args" "/docs/5/current/publication" "live publish path"
+
 finish
