@@ -33,7 +33,7 @@ resolve_base_url() { # [flag]
     b="$(jq -r '.baseUrl // empty' "$p")"
     if [ -n "$b" ]; then printf '%s' "$b"; return 0; fi
   fi
-  printf '%s' "https://markdown-notes-ten.vercel.app"
+  printf '%s' "https://addorimprove.com"
 }
 
 # req METHOD PATH [JSON_BODY]

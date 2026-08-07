@@ -45,7 +45,7 @@ or use the repo-local development CLI instructions when working from this repo.
 Scripts default to production:
 
 ```text
-https://markdown-notes-ten.vercel.app
+https://addorimprove.com
 ```
 
 Override with either:

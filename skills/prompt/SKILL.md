@@ -1,13 +1,13 @@
 ---
 name: prompt
-description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, iterate, branch, publish, restore files, organize Folders, or comment on Documents in the markdown-notes app (markdown-notes-ten.vercel.app). Prefer bundled scripts for API reads/writes; use the published `prompt` CLI for login, version/upgrade, and raw Files workflows.
+description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, iterate, branch, publish, restore files, organize Folders, or comment on Documents in the addorimprove.com app. Prefer bundled scripts for API reads/writes; use the published `prompt` CLI for login, version/upgrade, and raw Files workflows.
 compatibility: "Requires @addorimprove/prompt CLI with the Folder/Document model: --kind markdown|mdx|html|plain|files, Versioning On/Off, live-current Comments/publication, raw Files workflows, and legacy projects/--project/--format aliases. Check with `npx @addorimprove/prompt version --json`; if too old, run `npx @addorimprove/prompt upgrade` or use the repo-local development CLI."
 ---
 
 # Prompt
 
 Work with organizational **Folders** and content-bearing **Documents** in the
-markdown-notes app. A Document may be at root (no Folder) or inside a Folder.
+addorimprove.com app. A Document may be at root (no Folder) or inside a Folder.
 
 ## Product model
 
