@@ -18,5 +18,5 @@ Applied decisions:
 - Preserve explicit write safety in the root file because it is a high-value
   behavior the agent must see immediately.
 - Prefer bundled scripts for normal API reads/writes to avoid an `npx` round trip.
-- Keep the published CLI as the backup path for login, version/upgrade, bundle
-  restore, and the human/non-skill equivalent of staged selected-file uploads.
+- The published CLI is retired; auth uses a Settings API key and binary Files
+  go through the hosted MCP server.

@@ -92,29 +92,9 @@ Leave staging in place. Do not create `manifest.json` by default.
 ### Complete trees or binary Files
 
 Markdown bundles are text-only. For binary content, empty Directories, or an
-entire canonical tree, preview the complete Directory and use raw multipart:
-
-```bash
-npx @addorimprove/prompt new --name "<name>" --kind files \
-  --files <directory> [--versioning on|off] [--folder <folderId|root>]
-```
-
-Versioning Off current replacement is CAS-guarded:
-
-```bash
-npx @addorimprove/prompt files push <documentId> \
-  --files <directory> --expected-revision <loadedRevision>
-```
-
-Never retry a stale save by silently substituting a newer revision. Retain the
-local staged work, refresh, reconcile, preview again, and obtain approval.
-
-Logical pruning requires another explicit approval:
-
-```bash
-npx @addorimprove/prompt files delete <documentId> \
-  --files <pruned-directory> --expected-revision <loadedRevision>
-```
+entire canonical tree, use the hosted MCP server (`https://addorimprove.com/api/mcp`) or the web app. Versioning Off replacement is CAS-guarded:
+never retry a stale save by silently substituting a newer revision. Logical
+pruning requires another explicit approval.
 
 ## Versioning-On iteration and branching
 
@@ -167,13 +147,3 @@ The first live publish mints one stable slug. Unpublish reserves it; republish
 reuses it. The link always resolves the latest committed current state and never
 includes Comments or Scratchpad.
 
-## Restore Files locally
-
-Restore defaults under `.prompt/` and refuses overwrite:
-
-```bash
-npx @addorimprove/prompt restore-files <id> --version <label>
-npx @addorimprove/prompt restore-bundle [bundle.md]
-```
-
-Use `--output` or `--force` only after explicit destination/overwrite approval.

@@ -20,20 +20,6 @@ export MD_PROMPT_API_KEY=mdnp_...
 The agent cannot create the key. When `MD_PROMPT_API_KEY` is unset, scripts fall
 back to `apiKey` in `~/.config/prompt/config.json`.
 
-## CLI compatibility
-
-Files-format workflows require a `@addorimprove/prompt` CLI release with `bundle`,
-`stage-files`, `restore-files`, and `--files` upload flags. The skill
-`stage-files.sh` helper is self-contained, but the CLI-equivalent staging command
-requires a matching CLI release. Check before using those commands:
-
-```bash
-npx @addorimprove/prompt version --json
-```
-
-The CLI is deprecated and no longer updated; its `login` command no longer
-works. It reads the same `MD_PROMPT_API_KEY`.
-
 ## Target environment
 
 Scripts default to production:
@@ -67,6 +53,6 @@ Requirements:
 - `curl` is required.
 - `jq` is required for the bundled scripts. They use it to read credentials,
   construct request JSON, URL-encode path/query values, and shape responses.
-  If `jq` is missing, install it (`brew install jq`) or use the CLI instead.
+  If `jq` is missing, install it (`brew install jq`).
 
 Every bundled script prints JSON to stdout.

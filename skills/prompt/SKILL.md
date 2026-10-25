@@ -1,7 +1,7 @@
 ---
 name: prompt
-description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, iterate, branch, publish, restore files, organize Folders, or comment on Documents in the addorimprove.com app. Prefer bundled scripts for API reads/writes; use the published `prompt` CLI for login, version/upgrade, and raw Files workflows.
-compatibility: "Requires @addorimprove/prompt CLI with the Folder/Document model: --kind markdown|mdx|html|plain|files, Versioning On/Off, live-current Comments/publication, raw Files workflows, and legacy projects/--project/--format aliases. Check with `npx @addorimprove/prompt version --json`; if too old, run `npx @addorimprove/prompt upgrade` or use the repo-local development CLI."
+description: Use when the user wants to add, improve, fix, or get a prompt — or otherwise fetch, search, read, create, iterate, branch, publish, restore files, organize Folders, or comment on Documents in the addorimprove.com app. Prefer bundled scripts for API reads/writes; binary or complete Files trees go through the hosted MCP server or the web app.
+compatibility: "Requires curl, jq, and an addorimprove.com API key (MD_PROMPT_API_KEY)."
 ---
 
 # Prompt
@@ -13,8 +13,8 @@ addorimprove.com app. A Document may be at root (no Folder) or inside a Folder.
 
 - **Folder:** optional, nestable organizational container. It has no content,
   Versioning, Comments, Scratchpad, or publication.
-- **Document:** content-bearing item. `prompt docs` manages Documents and
-  `prompt new` creates one.
+- **Document:** content-bearing item. `ls.sh` lists Documents and
+  `new.sh` creates one.
 - **Document kinds:** **Markdown**, **MDX**, **HTML**, **Plain**, and **Files**.
   Files is a Document kind containing an ordered File/Directory tree; it is not
   an organizational Folder.
@@ -27,12 +27,10 @@ addorimprove.com app. A Document may be at root (no Folder) or inside a Folder.
 ## Routing
 
 - Prefer bundled scripts in `scripts/` for JSON reads and writes.
-- Use `npx @addorimprove/prompt` (deprecated, no longer updated) only for local
-  restore/bundle utilities, and binary-safe raw Files workflows.
 - For agent-prepared text Files, stage the exact selected payload under
   `./prompt/{id}/` and preview it before upload.
-- For binary or complete canonical trees, use `prompt new --kind files --files`
-  or `prompt files ...`; never pass binary through a Markdown bundle.
+- For binary or complete canonical trees, use the hosted MCP server (`https://addorimprove.com/api/mcp`) or the web app;
+  never pass binary through a Markdown bundle.
 
 ## Write safety
 
@@ -57,7 +55,7 @@ Files uploads require an exact staged tree/bundle preview first. Read
 ## Reference map
 
 - `references/setup.md` — login, target environment, script rules.
-- `references/commands.md` — scripts and CLI command contracts.
+- `references/commands.md` — script command contracts.
 - `references/workflows.md` — Folder, Document, Files, and publication flows.
 - `references/comments.md` — snapshot versus live-current Comments and CAS.
 - `references/write-safety.md` — approval and upload/restore safety.
@@ -85,7 +83,5 @@ explanations:
 - Snapshot Comments target one exact snapshot. Live-current Comments target a
   logical File and require observed content/thread revisions.
 - Unpublishing a live Document reserves its slug; republishing reuses it.
-- Scripts print JSON and do not prompt. `--json` also suppresses CLI previews;
-  it is not a substitute for showing the user the staged upload.
-- Restores default under `.prompt/` and refuse overwrite unless `--force` is
-  explicitly approved.
+- Scripts print JSON and do not prompt; JSON output is not a substitute for
+  showing the user the staged upload.

@@ -4,8 +4,7 @@
 #
 # jq and curl are required for the bundled scripts. jq reads stored credentials,
 # constructs request JSON, URL-encodes path/query values, and shapes responses.
-# If jq is missing, install it (`brew install jq`) or use the published
-# `prompt` CLI instead.
+# If jq is missing, install it (`brew install jq`).
 
 prompt_config_path() {
   printf '%s/prompt/config.json' "${XDG_CONFIG_HOME:-$HOME/.config}"

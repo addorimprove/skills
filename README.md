@@ -3,8 +3,7 @@
 Agent skills for the **addorimprove** app, installable via the
 [skills](https://skills.sh) CLI. Currently contains the **`prompt`** skill —
 reading and writing prompts (documents), versions, and comments, driven by
-bundled API scripts, with the published `prompt` CLI (`npx @addorimprove/prompt`)
-as a backup option.
+bundled API scripts.
 
 ## Install
 
@@ -25,11 +24,7 @@ prompts/documents and their comments in the addorimprove app
 (`addorimprove.com`). The full instructions live in
 [`skills/prompt/SKILL.md`](skills/prompt/SKILL.md). Detailed setup, command,
 write safety, workflow, comment, and version-label guidance is split into smaller
-files under [`skills/prompt/references/`](skills/prompt/references/). The CLI
-also includes `prompt stage-files --id <id> <file>...` as the CLI-equivalent
-staging workflow and `prompt restore-bundle [bundle.md] --output <dir>
-[--force] [-y]` for restoring Markdown bundles, with a folder-style preview,
-confirmation before files are written, and default refusal to overwrite existing files.
+files under [`skills/prompt/references/`](skills/prompt/references/).
 
 ## Auth
 
