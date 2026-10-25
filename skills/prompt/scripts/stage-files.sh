@@ -206,14 +206,6 @@ if [ -n "$name" ]; then
 else
   printf '  bash "$SKILL_DIR/scripts/new.sh" --name "<name>" -f %s --format files\n' "$(shell_quote "$bundle_rel")"
 fi
-printf '\nCLI equivalent:\n'
-if [ -n "$name" ]; then
-  printf '  npx @addorimprove/prompt stage-files --id %s --name %s%s\n' "$(shell_quote "$stage_id")" "$(shell_quote "$name")" "$(shell_quote_args "${rels[@]}")"
-  printf '  npx @addorimprove/prompt new --name %s -f %s --format files\n' "$(shell_quote "$name")" "$(shell_quote "$bundle_rel")"
-else
-  printf '  npx @addorimprove/prompt stage-files --id %s <file>...\n' "$(shell_quote "$stage_id")"
-  printf '  npx @addorimprove/prompt new --name "<name>" -f %s --format files\n' "$(shell_quote "$bundle_rel")"
-fi
 printf '\nOther approved upload forms:\n'
 printf '  bash "$SKILL_DIR/scripts/iterate.sh" <docId> --parent <label> -f %s --format files\n' "$(shell_quote "$bundle_rel")"
 printf '  bash "$SKILL_DIR/scripts/branch.sh" <docId> <parentLabel> -f %s --format files\n' "$(shell_quote "$bundle_rel")"

@@ -60,38 +60,5 @@ Versioning-On updates may use the existing `iterate.sh` / `branch.sh`
 
 ### Complete/binary Files trees
 
-Use the repository CLI so multipart bytes, canonical metadata, explicit order,
-and empty Directories are preserved:
-
-```bash
-npx @addorimprove/prompt new --name "<name>" --kind files \
-  --files <directory> [--versioning on|off] [--folder <id|root>]
-
-npx @addorimprove/prompt files create "<name>" --files <directory> \
-  [--versioning on|off] [--folder <id|root>]
-npx @addorimprove/prompt files ls <documentId> [--snapshot <snapshotId>]
-npx @addorimprove/prompt files pull <documentId> [--snapshot <snapshotId>] [--output <dir>]
-npx @addorimprove/prompt files push <documentId> --files <directory> --expected-revision <n>
-npx @addorimprove/prompt files delete <documentId> --files <pruned-directory> --expected-revision <n>
-npx @addorimprove/prompt files snapshot <documentId> --files <directory> --parent <label> --intent iterate|branch
-```
-
-`files delete` publishes a confirmed pruned current tree and is destructive.
-`files snapshot`, iterate, and branch require Versioning On.
-
-## Other CLI utilities
-
-```bash
-# create an API key at https://addorimprove.com/settings/account
-npx @addorimprove/prompt version --json
-npx @addorimprove/prompt upgrade
-npx @addorimprove/prompt folders [ls] [--parent <id>]
-npx @addorimprove/prompt docs [ls] [-q <query>]
-npx @addorimprove/prompt docs move <documentId> --folder <id|root>
-npx @addorimprove/prompt bundle <dir> [--output <file>]
-npx @addorimprove/prompt restore-bundle [bundle.md] [--output <dir>] [--force]
-npx @addorimprove/prompt restore-files <id> [--version <label>] [--output <dir>] [--force]
-```
-
-Compatibility aliases remain: `projects`, `--project`, `--format`, `ls`, and
-legacy bundle/restore commands. Their routes, JSON fields, and IDs are unchanged.
+Markdown bundles are text-only. Upload binary content, empty Directories, or an
+entire canonical tree through the hosted MCP server (`https://addorimprove.com/api/mcp`) or the web app.

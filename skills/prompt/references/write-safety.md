@@ -13,7 +13,7 @@ Get the user's explicit go-ahead before every write, including:
 - any `--force`, `-y`, logical delete, or destination outside `.prompt/`.
 
 Bundled scripts act immediately and do not prompt. `-y` may be used only after
-approval. JSON output suppresses CLI previews and never counts as user review.
+approval. JSON output never counts as user review.
 
 ## Document bodies
 
@@ -80,15 +80,15 @@ ordered tree:
 1. stage/validate the entire Directory;
 2. show the complete tree, primary File, mode, and Folder/root destination;
 3. obtain approval;
-4. use `prompt new --kind files --files` or `prompt files create`.
+4. upload through the hosted MCP server (`https://addorimprove.com/api/mcp`) or the web app.
 
 Never route binary through bundle text. Raw upload checks each byte count and
 checksum and never exposes R2 keys.
 
 ## Versioning-Off current writes
 
-`files push` and logical `files delete` require the editor-loaded
-`--expected-revision`. On `stale_revision`, retain the local work, refresh,
+Current replacement and logical pruning require the editor-loaded expected
+revision. On `stale_revision`, retain the local work, refresh,
 reconcile, preview again, and ask before retrying. Never substitute the server's
 new revision automatically.
 
@@ -106,18 +106,10 @@ Confirm exact target and resulting behavior:
 - unpublish reserves either existing slug for reuse;
 - Comments and Scratchpad remain private.
 
-## Restore/download safety
+## Local staging
 
-Restore commands:
-
-- default under `.prompt/`;
-- preview every output File;
-- reject absolute/traversal paths and symlink escapes;
-- refuse overwrite unless `--force` is explicitly approved;
-- write elsewhere only when the user explicitly supplies `--output <dir>`.
-
-Local `bundle`, `stage-files`, restore, and overwrite are writes too; approval
-still applies even though they do not mutate the remote app.
+`stage-files` writes local files; approval still applies even though it does
+not mutate the remote app.
 
 ## Legacy aliases
 
