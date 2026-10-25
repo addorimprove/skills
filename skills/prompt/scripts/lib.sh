@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Shared helpers for the prompt skill scripts. Source this; do not execute.
-# Resolution matches the @addorimprove/prompt CLI exactly.
+# Key resolution: MD_PROMPT_API_KEY, then apiKey in ~/.config/prompt/config.json.
 #
 # jq and curl are required for the bundled scripts. jq reads stored credentials,
 # constructs request JSON, URL-encodes path/query values, and shapes responses.
@@ -46,7 +46,7 @@ req() {
   local key
   key="$(resolve_api_key)"
   if [ -z "$key" ]; then
-    echo "Not logged in. Run 'npx @addorimprove/prompt login'." >&2
+    echo "Not logged in. Create an API key at https://addorimprove.com/settings/account and set MD_PROMPT_API_KEY." >&2
     return 4
   fi
   local base url
@@ -69,7 +69,7 @@ req() {
   case "$status" in
     204) return 0 ;;
     2*) printf '%s' "$resp"; return 0 ;;
-    401) echo "Not logged in. Run 'npx @addorimprove/prompt login'." >&2; return 4 ;;
+    401) echo "Not logged in. Create an API key at https://addorimprove.com/settings/account and set MD_PROMPT_API_KEY." >&2; return 4 ;;
     404) echo "Not found (or not yours)." >&2; return 1 ;;
     *)
       local msg

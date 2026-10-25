@@ -2,7 +2,7 @@
 
 ## Login
 
-Bundled scripts and the published CLI share one stored `mdnp_…` key.
+Bundled scripts authenticate with an `mdnp_…` API key.
 
 Check current login state:
 
@@ -10,16 +10,15 @@ Check current login state:
 bash "$SKILL_DIR/scripts/whoami.sh"
 ```
 
-If the script prints `Not logged in`, ask the **user** to run:
+If the script prints `Not logged in`, ask the **user** to create an API key at
+https://addorimprove.com/settings/account and export it:
 
 ```bash
-npx @addorimprove/prompt login
+export MD_PROMPT_API_KEY=mdnp_...
 ```
 
-Login is an interactive browser PKCE flow and cannot be completed by the agent.
-It stores the key at `~/.config/prompt/config.json`.
-
-`MD_PROMPT_API_KEY` overrides the stored key.
+The agent cannot create the key. When `MD_PROMPT_API_KEY` is unset, scripts fall
+back to `apiKey` in `~/.config/prompt/config.json`.
 
 ## CLI compatibility
 
@@ -32,13 +31,8 @@ requires a matching CLI release. Check before using those commands:
 npx @addorimprove/prompt version --json
 ```
 
-If the installed CLI is older than the files-workflow release, ask the user to run:
-
-```bash
-npx @addorimprove/prompt upgrade
-```
-
-or use the repo-local development CLI instructions when working from this repo.
+The CLI is deprecated and no longer updated; its `login` command no longer
+works. It reads the same `MD_PROMPT_API_KEY`.
 
 ## Target environment
 
