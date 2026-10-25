@@ -82,7 +82,7 @@ npx @addorimprove/prompt files snapshot <documentId> --files <directory> --paren
 ## Other CLI utilities
 
 ```bash
-npx @addorimprove/prompt login
+# create an API key at https://addorimprove.com/settings/account
 npx @addorimprove/prompt version --json
 npx @addorimprove/prompt upgrade
 npx @addorimprove/prompt folders [ls] [--parent <id>]

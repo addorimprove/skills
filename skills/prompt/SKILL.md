@@ -27,7 +27,7 @@ addorimprove.com app. A Document may be at root (no Folder) or inside a Folder.
 ## Routing
 
 - Prefer bundled scripts in `scripts/` for JSON reads and writes.
-- Use `npx @addorimprove/prompt` for `login`, `version`, `upgrade`, local
+- Use `npx @addorimprove/prompt` (deprecated, no longer updated) only for local
   restore/bundle utilities, and binary-safe raw Files workflows.
 - For agent-prepared text Files, stage the exact selected payload under
   `./prompt/{id}/` and preview it before upload.
@@ -49,10 +49,8 @@ Files uploads require an exact staged tree/bundle preview first. Read
    ```bash
    bash "$SKILL_DIR/scripts/whoami.sh"
    ```
-3. If needed, ask the user to run:
-   ```bash
-   npx @addorimprove/prompt login
-   ```
+3. If not logged in, ask the user to create an API key at
+   https://addorimprove.com/settings/account and set `MD_PROMPT_API_KEY`.
 4. Choose a command from `references/commands.md`.
 5. Get approval before any write.
 
